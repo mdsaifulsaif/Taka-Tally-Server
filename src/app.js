@@ -3,6 +3,7 @@ require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const autnRoutes = require("./routes/user.routes");
+const transactionRoutes = require("./routes/transaction.routes");
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", autnRoutes);
+app.use("/api/transaction", transactionRoutes);
 
 module.exports = app;
