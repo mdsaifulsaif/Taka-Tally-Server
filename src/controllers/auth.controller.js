@@ -83,6 +83,28 @@ async function loginUser(req, res) {
   }
 }
 
+async function cureentUser(req, res) {
+  const token = req.cookies.token;
+
+  console.log(token);
+
+  if (!token) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded, "decoded tokenmmmmmmmmmm");
+    const user = await userModel.findById(decoded.id).select(-"password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ user });
+  } catch (error) {
+    return error.status(401).json({ message: "Invalid token" });
+  }
+}
+
 function loginOut(req, res) {
   res.clearCookie("token");
   res.status(200).json({
@@ -90,4 +112,4 @@ function loginOut(req, res) {
   });
 }
 
-module.exports = { registerUser, loginUser, loginOut };
+module.exports = { registerUser, loginUser, loginOut, cureentUser };

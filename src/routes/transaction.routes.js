@@ -8,5 +8,10 @@ Router.post(
   UserMiddleWare.authUserMiddleWare,
   transactionController.addTransaction
 );
+Router.get(
+  "/summary",
+  UserMiddleWare.authUserMiddleWare,
+  transactionController.getSummary
+);
 
 module.exports = Router;

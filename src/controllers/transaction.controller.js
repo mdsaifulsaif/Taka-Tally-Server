@@ -1,30 +1,5 @@
 const transactionModel = require("../models/transaction.model");
 
-// async function transaction(req, res) {
-//   try {
-//     const userId = req.user._id;
-//     const { title, amount, type, category, note, date } = req.body;
-
-//     if (!title || !amount || !type) {
-//       return res.status(400).json({ message: "Please input your all info" });
-//     }
-//     const transaction = await new transactionModel.create({
-//       title,
-//       amount,
-//       type,
-//       category,
-//       note,
-//       date,
-//     });
-//     res.status(200).json({
-//       message: "transaction create successfully",
-//       transaction,
-//     });
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
-
 async function addTransaction(req, res) {
   try {
     const userId = req.user._id;
@@ -53,6 +28,28 @@ async function addTransaction(req, res) {
   }
 }
 
+async function getSummary(req, res) {
+  try {
+    const incomeAgg = await transactionModel.aggregate([
+      { $match: { type: "income" } },
+      { $group: { _id: null, totalIncome: { $sum: "$amount" } } },
+    ]);
+
+    const expenseAgg = await transactionModel.aggregate([
+      { $match: { type: "expense" } },
+      { $group: { _id: null, totalExpense: { $sum: "$amount" } } },
+    ]);
+
+    const totalIncome = incomeAgg[0]?.totalIncome || 0;
+    const totalExpense = expenseAgg[0]?.totalExpense || 0;
+    const balance = totalIncome - totalExpense;
+
+    res.status(200).json({ totalIncome, totalExpense, balance });
+  } catch (error) {
+    res.status(500).json({ message: "Summary not work", error });
+  }
+}
 module.exports = {
   addTransaction,
+  getSummary,
 };
