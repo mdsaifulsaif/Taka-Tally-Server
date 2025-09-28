@@ -11,7 +11,7 @@ async function connectDB() {
     );
     console.log("Mongodb connected");
   } catch (error) {
-    console.error("❌ Mongodb connection error:", error.message);
+    console.error("Mongodb connection error:", error.message);
     throw error;
   }
 }
