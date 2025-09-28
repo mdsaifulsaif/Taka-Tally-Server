@@ -55,7 +55,9 @@ async function getSummary(req, res) {
 async function getAllTransactions(req, res) {
   const userId = req.user.id;
 
-  const statements = await transactionModel.find({ userId: userId });
+  const statements = await transactionModel
+    .find({ userId: userId })
+    .sort({ createdAt: -1 });
 
   res.status(200).json({
     message: "fatched user all transactions succfully",
@@ -66,10 +68,12 @@ async function getAllTransactions(req, res) {
 async function getAllTransactionExpense(req, res) {
   const userId = req.user.id;
 
-  const expenses = await transactionModel.find({
-    userId: userId,
-    type: "expense",
-  });
+  const expenses = await transactionModel
+    .find({
+      userId: userId,
+      type: "expense",
+    })
+    .sort({ createdAt: -1 });
 
   res.status(200).json({
     message: "All Transaction Expense ",
@@ -81,10 +85,12 @@ async function getAllTransactionIncome(req, res) {
   const userId = req.user.id;
 
   try {
-    const incomes = await transactionModel.find({
-      userId: userId,
-      type: "income",
-    });
+    const incomes = await transactionModel
+      .find({
+        userId: userId,
+        type: "income",
+      })
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       message: "All Transaction Expenses fetched successfully",

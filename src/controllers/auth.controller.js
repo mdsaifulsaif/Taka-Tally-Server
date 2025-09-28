@@ -33,7 +33,7 @@ async function registerUser(req, res) {
     // set token
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // প্রোডাকশনে true করো
+      secure: true,
       sameSite: "lax",
     });
 
@@ -47,12 +47,10 @@ async function registerUser(req, res) {
   }
 }
 
-// 🔹 লগইন ফাংশন
 async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
 
-    // find user in userModel.collection
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Wrong email" });
@@ -72,7 +70,7 @@ async function loginUser(req, res) {
     // set token
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // প্রোডাকশনে true করো
+      secure: true,
       sameSite: "lax",
     });
 
