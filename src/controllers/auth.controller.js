@@ -56,25 +56,29 @@ async function loginUser(req, res) {
       return res.status(400).json({ message: "Wrong email" });
     }
 
-    // sceck password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Wrong Password " });
+      return res.status(400).json({ message: "Wrong Password" });
     }
 
-    // make token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    // set token
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
     });
 
-    res.json({ message: "Login successfully", token });
+    res.json({
+      message: "Login successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "server error" });
@@ -90,7 +94,7 @@ async function currentUser1(req, res) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await userModel.findById(decoded.id).select(-"password");
+    const user = await userModel.findById(decoded.id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
