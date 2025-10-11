@@ -39,5 +39,10 @@ Router.get(
   UserMiddleWare.authUserMiddleWare,
   transactionController.getAllTransactionIncome
 );
+Router.get(
+  "/all-receivable",
+  UserMiddleWare.authUserMiddleWare,
+  transactionController.getAllTransactionAR
+);
 
 module.exports = Router;

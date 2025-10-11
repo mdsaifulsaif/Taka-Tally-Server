@@ -5,7 +5,17 @@ async function addTransaction(req, res) {
   try {
     const userId = req.user._id;
 
-    const { title, amount, type, category, note, date } = req.body;
+    const {
+      title,
+      amount,
+      type,
+      category,
+      note,
+      partyName,
+      partyContact,
+      status,
+      date,
+    } = req.body;
 
     if (!title || !amount || !type || !category) {
       return res.status(400).json({ message: "please input your info" });
@@ -17,6 +27,9 @@ async function addTransaction(req, res) {
       type,
       category,
       note,
+      partyName,
+      partyContact,
+      status,
       date,
       userId,
     });
@@ -105,6 +118,20 @@ async function getAllTransactionIncome(req, res) {
   }
 }
 
+async function getAllTransactionAR(req, res) {
+  const userId = req.user.id;
+  const receivable = await transactionModel
+    .find({
+      userId: userId,
+      type: "receivable",
+    })
+    .sort({ createdAt: -1 });
+
+  return res
+    .status(200)
+    .json({ message: "fetced data successfully", receivable });
+}
+
 async function updateTransaction(req, res) {
   try {
     const { title, amount, type, category, note, date } = req.body;
@@ -143,4 +170,5 @@ module.exports = {
   getAllTransactionIncome,
   updateTransaction,
   deleteTransaction,
+  getAllTransactionAR,
 };
