@@ -162,6 +162,24 @@ async function deleteTransaction(req, res) {
   return res.status(200).json({ message: "Transaction delete successfully" });
 }
 
+// PUT /api/transaction/update-status/:id
+async function updateStatus(req, res) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body; // e.g., "paid"
+
+    const updated = await transactionModel.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Status update failed", error });
+  }
+}
+
 module.exports = {
   addTransaction,
   getSummary,
@@ -171,4 +189,5 @@ module.exports = {
   updateTransaction,
   deleteTransaction,
   getAllTransactionAR,
+  updateStatus,
 };

@@ -44,5 +44,10 @@ Router.get(
   UserMiddleWare.authUserMiddleWare,
   transactionController.getAllTransactionAR
 );
+Router.put(
+  "/update-status/:id",
+  UserMiddleWare.authUserMiddleWare,
+  transactionController.updateStatus
+);
 
 module.exports = Router;
