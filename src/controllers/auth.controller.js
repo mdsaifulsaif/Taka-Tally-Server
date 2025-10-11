@@ -4,15 +4,24 @@ const userModel = require("../models/user.model");
 
 async function registerUser(req, res) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, phoneNumber, password } = req.body;
+    console.log("user phone number", phoneNumber);
 
-    if (!email || !password) {
+    if (!name || !phoneNumber || !password) {
       return res
         .status(400)
         .json({ message: "pleas inter your email and password" });
     }
 
-    const existingUser = await userModel.findOne({ email });
+    // 2. Phone number length & digits check
+    const phoneRegex = /^[0-9]{11}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return res.status(400).json({
+        message: "Phone number must be exactly 11 digits and numeric only",
+      });
+    }
+
+    const existingUser = await userModel.findOne({ phoneNumber });
     if (existingUser) {
       return res.status(400).json({ message: "User alrady exist" });
     }
@@ -21,6 +30,7 @@ async function registerUser(req, res) {
 
     const newUser = await userModel.create({
       name,
+      phoneNumber,
       email,
       password: hashedPassword,
     });
@@ -49,11 +59,11 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
   try {
-    const { email, password } = req.body;
+    const { phoneNumber, password } = req.body;
 
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ phoneNumber });
     if (!user) {
-      return res.status(400).json({ message: "Wrong email" });
+      return res.status(400).json({ message: "Invalid User" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);

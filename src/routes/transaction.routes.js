@@ -19,6 +19,16 @@ Router.get(
   UserMiddleWare.authUserMiddleWare,
   transactionController.getAllTransactions
 );
+Router.patch(
+  "/:id",
+  UserMiddleWare.authUserMiddleWare,
+  transactionController.updateTransaction
+);
+Router.delete(
+  "/:id",
+  UserMiddleWare.authUserMiddleWare,
+  transactionController.deleteTransaction
+);
 Router.get(
   "/all-expeces",
   UserMiddleWare.authUserMiddleWare,

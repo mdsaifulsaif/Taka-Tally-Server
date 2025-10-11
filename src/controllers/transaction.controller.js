@@ -105,10 +105,42 @@ async function getAllTransactionIncome(req, res) {
   }
 }
 
+async function updateTransaction(req, res) {
+  try {
+    const { title, amount, type, category, note, date } = req.body;
+
+    const transaction = await transactionModel.findByIdAndUpdate(
+      req.params.id,
+      { title, amount, type, category, note, date },
+      { new: true }
+    );
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.status(200).json({ message: "updated sucessfully", transaction });
+  } catch (error) {
+    res.status(500).json({ message: "Transaction update can't update", error });
+  }
+}
+
+async function deleteTransaction(req, res) {
+  const trId = req.params.id;
+  const transaction = await transactionModel.findByIdAndDelete(trId);
+
+  if (!transaction) {
+    return res.status(404).json({ message: "Can't find transaction" });
+  }
+  return res.status(200).json({ message: "Transaction delete successfully" });
+}
+
 module.exports = {
   addTransaction,
   getSummary,
   getAllTransactions,
   getAllTransactionExpense,
   getAllTransactionIncome,
+  updateTransaction,
+  deleteTransaction,
 };

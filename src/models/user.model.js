@@ -6,9 +6,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    phoneNumber: {
+      type: String,
+      minlength: 11,
+      maxlength: 11,
+      match: /^[0-9]{11}$/,
+    },
     email: {
       type: String,
-      required: true,
+      default: null,
     },
     password: {
       type: String,
